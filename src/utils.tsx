@@ -1,5 +1,5 @@
-import {FallbackProps} from 'react-error-boundary';
 import React from 'react';
+import {FallbackProps} from './lib/ErrorBoundary';
 
 /**
  * 出错后现时的组件
@@ -7,12 +7,12 @@ import React from 'react';
  * @param resetErrorBoundary
  * @constructor
  */
-export const ErrorFallback = ({error, resetErrorBoundary}: FallbackProps) => {
+export const ErrorFallback = ({error}: FallbackProps) => {
   return (
     <div role="alert">
       <p>出错啦</p>
       <pre>{error.message}</pre>
-      <button onClick={resetErrorBoundary}>Try again</button>
+      <button>Try again</button>
     </div>
   )
 }
@@ -20,11 +20,10 @@ export const ErrorFallback = ({error, resetErrorBoundary}: FallbackProps) => {
 /**
  * 出错后的回调
  * @param error
- * @param info
  */
-export const onError = (error: Error, info: {componentStack: string}) => {
+export const onError = (error: Error) => {
   // 日志上報
-  console.log(error, info);
+  console.log(error);
 }
 
 /**
