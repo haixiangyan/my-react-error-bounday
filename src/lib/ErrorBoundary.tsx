@@ -2,11 +2,13 @@ import * as React from 'react';
 
 export interface FallbackProps {
   error: Error;
+  resetErrorBoundary: () => void;
 }
 
 interface Props {
   FallbackComponent?: React.ComponentType<FallbackProps>;
   onError?: (error: Error, info: string) => void;
+  onReset?: () => void;
 }
 
 interface State {
@@ -31,13 +33,20 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren<Props>, Stat
     }
   }
 
+  resetErrorBoundary = () => {
+    if (this.props.onReset) {
+      this.props.onReset();
+    }
+    this.setState(initialState);
+  }
+
   render() {
     const {FallbackComponent} = this.props;
     const {error} = this.state;
 
     if (error !== null) {
       if (FallbackComponent) {
-        return <FallbackComponent error={error} />
+        return <FallbackComponent error={error} resetErrorBoundary={this.resetErrorBoundary} />
       }
     }
 
