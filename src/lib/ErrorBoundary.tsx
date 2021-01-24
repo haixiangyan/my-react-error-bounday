@@ -1,15 +1,16 @@
 import * as React from 'react';
 
+type FallbackElement = React.ReactElement<unknown, string | React.FC | typeof React.Component> | null;
+
 export interface FallbackProps {
   error: Error;
   resetErrorBoundary: () => void;
 }
 
-export declare function FallbackRender (
-  props: FallbackProps,
-): React.ReactElement<unknown, string | React.FC | typeof React.Component> | null;
+export declare function FallbackRender (props: FallbackProps): FallbackElement;
 
 interface Props {
+  fallback?: FallbackElement;
   FallbackComponent?: React.ComponentType<FallbackProps>;
   fallbackRender?: typeof FallbackRender;
   onError?: (error: Error, info: string) => void;
@@ -46,7 +47,7 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren<Props>, Stat
   }
 
   render() {
-    const {FallbackComponent, fallbackRender} = this.props;
+    const {fallback, FallbackComponent, fallbackRender} = this.props;
     const {error} = this.state;
 
     if (error !== null) {
@@ -55,6 +56,9 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren<Props>, Stat
         resetErrorBoundary: this.resetErrorBoundary,
       }
 
+      if (React.isValidElement(fallback)) {
+        return fallback;
+      }
       if (FallbackComponent) {
         return <FallbackComponent {...fallbackProps} />
       }
