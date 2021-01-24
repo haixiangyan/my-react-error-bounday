@@ -104,6 +104,5 @@ function withErrorBoundary<P> (
 
 export {
   withErrorBoundary,
+  ErrorBoundary,
 }
-
-export default ErrorBoundary;
