@@ -1,7 +1,7 @@
 import React from 'react';
-import MakeError from './MakeError';
-import {ErrorFallback} from '../utils';
-import {withErrorBoundary} from '../lib/ErrorBoundary';
+import MakeError from '../Error/MakeError';
+import {ErrorFallback} from '../../utils';
+import {withErrorBoundary} from '../../lib/ErrorBoundary';
 
 const WithErrorBoundaryExample = withErrorBoundary(MakeError, {
   FallbackComponent: ErrorFallback,

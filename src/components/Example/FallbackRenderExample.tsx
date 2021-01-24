@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import MakeError from './MakeError';
-import {ErrorFallback } from '../utils';
-import {ErrorBoundary} from '../lib/ErrorBoundary';
+import MakeError from '../Error/MakeError';
+import {ErrorFallback } from '../../utils';
+import {ErrorBoundary} from '../../lib/ErrorBoundary';
 
 const FallbackRenderExample = () => {
   const [hasError, setHasError] = useState(false);
