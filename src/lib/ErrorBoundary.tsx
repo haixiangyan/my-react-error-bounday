@@ -19,11 +19,20 @@ interface ErrorBoundaryProps {
   fallbackRender?: typeof FallbackRender;
   onError?: (error: Error, info: string) => void;
   onReset?: () => void;
+  resetKeys?: Array<unknown>;
+  onResetKeysChange?: (
+    prevResetKey: Array<unknown> | undefined,
+    resetKeys: Array<unknown> | undefined,
+  ) => void;
 }
 
 // 本组件 ErrorBoundary 的 props
 interface ErrorBoundaryState {
   error: Error | null;
+}
+
+const changedArray = (a: Array<unknown> = [], b: Array<unknown> = []) => {
+  return a.length !== b.length || a.some((item, index) => !Object.is(item, b[index]));
 }
 
 // 初始状态
@@ -33,6 +42,7 @@ const initialState: ErrorBoundaryState = {
 
 class ErrorBoundary extends React.Component<React.PropsWithChildren<ErrorBoundaryProps>, ErrorBoundaryState> {
   state = initialState;
+  updatedWithError = false;
 
   static getDerivedStateFromError(error: Error) {
     return {error};
@@ -44,11 +54,34 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren<ErrorBoundar
     }
   }
 
+  componentDidUpdate(prevProps: Readonly<React.PropsWithChildren<ErrorBoundaryProps>>) {
+    const {error} = this.state;
+    const {resetKeys, onResetKeysChange} = this.props;
+
+    if (error !== null && !this.updatedWithError) {
+      this.updatedWithError = true;
+      return;
+    }
+
+    if (error !== null && changedArray(prevProps.resetKeys, resetKeys)) {
+      if (onResetKeysChange) {
+        onResetKeysChange(prevProps.resetKeys, resetKeys);
+      }
+
+      this.reset();
+    }
+  }
+
+  reset = () => {
+    this.updatedWithError = false;
+    this.setState(initialState);
+  }
+
   resetErrorBoundary = () => {
     if (this.props.onReset) {
       this.props.onReset();
     }
-    this.setState(initialState);
+    this.reset();
   }
 
   render() {

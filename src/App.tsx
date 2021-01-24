@@ -4,6 +4,7 @@ import FallbackRenderExample from './components/Example/FallbackRenderExample';
 import FallbackExample from './components/Example/FallbackExample';
 import WithErrorBoundaryExample from './components/Example/WithErrorBoundaryExample';
 import UseErrorHandlerExample from './components/Example/UseErrorHandlerExample';
+import ResetKeysExample from './components/Example/ResetKeysExample';
 
 const App = () => {
   return (
@@ -22,6 +23,9 @@ const App = () => {
 
       <h2>useErrorHandler 例子</h2>
       <UseErrorHandlerExample/>
+
+      <h2>ResetKeys 例子</h2>
+      <ResetKeysExample/>
     </div>
   );
 }
