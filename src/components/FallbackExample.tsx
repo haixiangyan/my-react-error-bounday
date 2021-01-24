@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import MakeError from './MakeError';
 import ErrorBoundary from '../lib/ErrorBoundary';
 
-const FallbackComponentExample = () => {
+const FallbackExample = () => {
   const [hasError, setHasError] = useState(false);
 
   const onError = (error: Error) => {
@@ -27,4 +27,4 @@ const FallbackComponentExample = () => {
   )
 };
 
-export default FallbackComponentExample;
+export default FallbackExample;

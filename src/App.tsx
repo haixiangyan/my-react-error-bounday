@@ -2,6 +2,7 @@ import React from 'react';
 import FallbackComponentExample from './components/FallbackComponentExample';
 import FallbackRenderExample from './components/FallbackRenderExample';
 import FallbackExample from './components/FallbackExample';
+import WithErrorBoundaryExample from './components/WithErrorBoundaryExample';
 
 const App = () => {
   return (
@@ -14,6 +15,9 @@ const App = () => {
 
       <h2>fallbackRender 例子</h2>
       <FallbackRenderExample />
+
+      <h2>withErrorBoundary 例子</h2>
+      <WithErrorBoundaryExample/>
     </div>
   );
 }

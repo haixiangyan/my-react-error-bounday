@@ -3,7 +3,7 @@ import MakeError from './MakeError';
 import {ErrorFallback } from '../utils';
 import ErrorBoundary from '../lib/ErrorBoundary';
 
-const NaiveErrorBoundary = () => {
+const FallbackRenderExample = () => {
   const [hasError, setHasError] = useState(false);
 
   const onError = (error: Error) => {
@@ -28,4 +28,4 @@ const NaiveErrorBoundary = () => {
   )
 };
 
-export default NaiveErrorBoundary;
+export default FallbackRenderExample;
