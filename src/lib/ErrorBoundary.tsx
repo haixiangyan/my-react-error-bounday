@@ -59,12 +59,14 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren<Props>, Stat
       if (React.isValidElement(fallback)) {
         return fallback;
       }
-      if (FallbackComponent) {
-        return <FallbackComponent {...fallbackProps} />
-      }
       if (typeof fallbackRender === 'function') {
         return (fallbackRender as typeof FallbackRender)(fallbackProps);
       }
+      if (FallbackComponent) {
+        return <FallbackComponent {...fallbackProps} />
+      }
+
+      throw new Error('ErrorBoundary 组件需要传入 fallback, fallbackRender, FallbackComponent 其中一个');
     }
 
     return this.props.children;
