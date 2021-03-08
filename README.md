@@ -70,7 +70,7 @@ return getScore(trimName);
 
 我大意了啊！没有做类型判断！马上回滚。加了 `if (typeof user === string)` 的字符串类型判断，准备再次发正式，但是我一想不对，难不成对每个数据我都要像像佛一样供着？
 
-```
+```tsx
 // 这就很离谱
 try {
     const scores = users.map(u => {
@@ -114,7 +114,7 @@ try {
 
 直接把官网例子抄下来，将 ErrorBoundary 组件输出:
 
-```jsx
+```tsx
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -144,7 +144,7 @@ class ErrorBoundary extends React.Component {
 
 然后将业务组件包裹：
 
-```
+```html
 <ErrorBoundary> // 捕获错误
   <UserList /> // 使劲报错
 </ErrorBoundary>
@@ -164,7 +164,7 @@ class ErrorBoundary extends React.Component {
 
 上面只是解决了燃眉之急，如果真要造一个好用的轮子，不应直接写死 `return <h1>Something went wrong</h1>`，应该添加 props 来传入报错显示内容（以下统称为 fallback）：
 
-```ts
+```tsx
 // 出错后显示的元素类型
 type FallbackElement = React.ReactElement<unknown, string | React.FC | typeof React.Component> | null;
 
@@ -235,7 +235,7 @@ const App = () => {
 
 这已经让 ErrorBoundary 变得稍微灵活一点了。但是有人就喜欢把 fallback 渲染函数、Fallback 组件作为 props 传入 ErrorBoundary，而不传一段 ReactElement，所以为了照顾更多人，将 fallback 进行扩展：
 
-```ts
+```tsx
 export declare function FallbackRender (props: FallbackProps): FallbackElement;
 
 // 本组件 ErrorBoundary 的 props
@@ -324,7 +324,7 @@ const App = () => {
 
 下面给出上面两个需求的实现：
 
-```ts
+```tsx
 // 出错后显示的元素类型
 type FallbackElement = React.ReactElement<unknown, string | React.FC | typeof React.Component> | null;
 
@@ -385,7 +385,7 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren<ErrorBoundar
 
 改写之后，在业务代码中添加重置逻辑：
 
-```
+```tsx
 const App = () => {
   const onError = () => logger.error('出错啦')
   const onReset = () => {
@@ -431,7 +431,7 @@ const App = () => {
 
 上面的思路听起来不就和 useEffect 里的依赖项 deps 数组一样嘛，不妨在 props 提供一个 `resetKeys` 数组，如果这个数组里的东西变了，ErrorBoundary 就重置，这样一控制是否要重置就更灵活了。马上动手实现一下：
 
-```ts
+```tsx
 // 本组件 ErrorBoundary 的 props
 interface ErrorBoundaryProps {
   ...
@@ -467,7 +467,7 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren<ErrorBoundar
 
 但这里又会有一个问题：万一 `resetKeys` 里元素是个 Date 或者一个对象怎么办？所以，我们还需要给开发者提供一种判断 `resetKeys` 元素是否改变的方法，这里就添加一个 `onResetKeysChange` 的 props 就好了：
 
-```ts
+```tsx
 // 本组件 ErrorBoundary 的 props
 interface ErrorBoundaryProps {
   ...
@@ -516,7 +516,7 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren<ErrorBoundar
 
 实现如下
 
-```ts
+```tsx
 class ErrorBoundary extends React.Component<React.PropsWithChildren<ErrorBoundaryProps>, ErrorBoundaryState> {
   state = initialState;
   // 是否已经由于 error 而引发的 render/update
@@ -639,7 +639,7 @@ function withErrorBoundary<P> (Component: React.ComponentType<P>, errorBoundaryP
 
 使用的时候就更简洁了一些了：
 
-```
+```tsx
 // 业务子组件
 const User = () => {
   return <div>User</div>
@@ -728,7 +728,7 @@ export default withErrorBoundary(Greeting)
 
 或者：
 
-```
+```tsx
 function Greeting() {
   const [name, setName] = React.useState('')
   const {greeting, error} = useGreeting(name)
