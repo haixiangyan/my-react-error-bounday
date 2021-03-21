@@ -1,6 +1,6 @@
 # 造一个 React 错误边界的轮子
 
-> 以下所有代码都已整理到 Github：https://github.com/Haixiang6123/learn-error-bounday
+> 以下所有代码都已整理到 Github：https://github.com/Haixiang6123/my-react-error-bounday
 > 
 > 参考的轮子：https://www.npmjs.com/package/react-error-boundary
 
