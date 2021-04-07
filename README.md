@@ -110,8 +110,6 @@ try {
 
 ## 第一鞭：抄
 
-![](https://upload-images.jianshu.io/upload_images/2979799-ffc3d4bc1f1f807f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-
 直接把官网例子抄下来，将 ErrorBoundary 组件输出:
 
 ```tsx
@@ -159,8 +157,6 @@ class ErrorBoundary extends React.Component {
 **2. 当业务组件报错时，会调用 componentDidCatch 钩子里的逻辑，将 hasError 设置 true，直接展示 <h1>**
 
 ## 第二鞭：造个灵活的轮子
-
-![](https://upload-images.jianshu.io/upload_images/2979799-100e83d29e39a103.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 上面只是解决了燃眉之急，如果真要造一个好用的轮子，不应直接写死 `return <h1>Something went wrong</h1>`，应该添加 props 来传入报错显示内容（以下统称为 fallback）：
 
@@ -312,8 +308,6 @@ const App = () => {
 
 ## 第三鞭：添加重置回调
 
-![](https://upload-images.jianshu.io/upload_images/2979799-29a64371c8d90687.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-
 有时候会遇到这种情况：服务器突然抽风了，503、502了，前端获取不到响应，这时候某个组件报错了，但是过一会又正常了。比较好的方法是允许用户点一下 fallback 里的一个按钮来重新加载出错组件，不需要重刷页面，这样的操作下面称为**“重置”**。
 
 同时，有些开发者也需要在重置里添加自己逻辑，比如弹提示、日志上报等。
@@ -422,8 +416,6 @@ const App = () => {
 **2. 在 fallback 组件里找个按钮绑定 `props.resetErrorBoundary` 来触发重置逻辑**
 
 ## 第四鞭：监听渲染以重置
-
-![](https://upload-images.jianshu.io/upload_images/2979799-68f334ac899b9fff.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 上面的重置逻辑简单也很实用，但是有时也会有局限性：触发重置的动作只能在 fallback 里面。假如我的重置按钮不在 fallback 里呢？或者 onReset 函数根本不在这个 App 组件下那怎么办呢？难道要将 onReset 像传家宝一路传到这个 App 再传入 ErrorBoundary 里？
 
@@ -590,8 +582,6 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren<ErrorBoundar
 这里自动重置还有一个好处：假如是由于网络波动引发的异常，那页面当然会显示 fallback 了，如果用上面直接调用 props.resetErrorBoundary 方法来重置，只要用户不点“重置”按钮，那块地方永远不会被重置。又由于是因为网络波动引发的异常，有可能就那0.001 秒有问题，别的时间又好了，所以如果我们将一些变化频繁的值放到 `resetKeys` 里就很容易自动触发重置。例如，报错后，其它地方的值变了从而更改了 `resetKeys` 的元素值就会触发自动重置。对于用户来说，最多只会看到一闪而过的 fallback，然后那块地方又正常了。这样一来，用户也不需要亲自触发重置了。
 
 ## 第五鞭：输出轮子
-
-![](https://upload-images.jianshu.io/upload_images/2979799-06ec5b84714571bb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 上面四鞭里，到最后都是 `export default ErrorBoundary` 将组件输出，如果代理里很多个地方都要 catch error，就有这样很啰嗦的代码：
 
@@ -783,4 +773,3 @@ export default withErrorBoundary(Greeting)
 谢谢朋友们。
 
 （故事纯属虚构，如有雷同，请自我检讨或者一键三连）
-
