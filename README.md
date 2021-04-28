@@ -2,7 +2,7 @@
 
 > 文章源码: https://github.com/Haixiang6123/my-react-error-bounday
 > 
-> 参考的轮子: https://www.npmjs.com/package/react-error-boundary
+> 参考轮子: https://www.npmjs.com/package/react-error-boundary
 
 ## 发生甚么事了
 
