@@ -1,8 +1,8 @@
-# 造一个 React 错误边界的轮子
+# 造一个 react-error-boundary 轮子
 
-> 以下所有代码都已整理到 Github：https://github.com/Haixiang6123/my-react-error-bounday
+> 文章源码: https://github.com/Haixiang6123/my-react-error-bounday
 > 
-> 参考的轮子：https://www.npmjs.com/package/react-error-boundary
+> 参考的轮子: https://www.npmjs.com/package/react-error-boundary
 
 ## 发生甚么事了
 
@@ -68,47 +68,9 @@ return getScore(trimName);
 }
 ```
 
-我大意了啊！没有做类型判断！马上回滚。加了 `if (typeof user === string)` 的字符串类型判断，准备再次发正式，但是我一想不对，难不成对每个数据我都要像像佛一样供着？
+我大意了啊！没有做类型判断！虽然这个是后端的异常问题，但是前端也不应该出现白屏。对于这种异常情况，应该使用 React 提供的 **“Error Boundary 错误边界特性”** 来处理。下面来说说怎么打好这一套 Error Boundary。
 
-```tsx
-// 这就很离谱
-try {
-    const scores = users.map(u => {
-        // 判空
-        if (!u) {
-            return;
-        }
-
-        // 判断错误类型
-        if (typeof u === 'string') {
-            return;
-        }
-
-        // 判断属性是否存在
-        if (!u.name) {
-            return;
-        }
-
-        const trimName = u.name.trim(0);
-
-        return getScore(trimName);
-    })
-
-    return scores;
-} catch (e) {
-    return null;
-}
-```
-这明显是后端没有对错误进行特殊处理啊，但是作为前端开发就算被后端百般蹂躏，页面也不应该白屏，应该就那个组件报错就好了。我定了定神，决定使出**“闪电五连鞭”**。
-
-![34fe-kefmphe1371072.gif](https://upload-images.jianshu.io/upload_images/2979799-c904ca6e4b3cbddc.gif?imageMogr2/auto-orient/strip)
-
-
-相信大家对JS异常捕获很熟悉了，`try-catch` 一包业务代码就收工了。不过，在组件里对异常捕获，需要用到的是 React 提供的 [Error Boundary 错误边界特性](https://zh-hans.reactjs.org/docs/error-boundaries.html)，用 `componentDidCatch` 钩子来对页面异常进行捕获，以至于不会将异常扩散到整个页面，有效防止页面白屏。
-
-下面，我来展示一下怎么打好这套**“闪电五连鞭”**。
-
-## 第一鞭：抄
+## 第一步：抄
 
 直接把官网例子抄下来，将 ErrorBoundary 组件输出:
 
@@ -156,7 +118,7 @@ class ErrorBoundary extends React.Component {
 **1. 将 ErrorBoundary 包裹可能出错的业务组件**
 **2. 当业务组件报错时，会调用 componentDidCatch 钩子里的逻辑，将 hasError 设置 true，直接展示 <h1>**
 
-## 第二鞭：造个灵活的轮子
+## 第二步：造个灵活的轮子
 
 上面只是解决了燃眉之急，如果真要造一个好用的轮子，不应直接写死 `return <h1>Something went wrong</h1>`，应该添加 props 来传入报错显示内容（以下统称为 fallback）：
 
@@ -306,7 +268,7 @@ const App = () => {
 **1. 将原来的 hasError 转为 error，从 boolean 转为 Error 类型，有利于获得更多的错误信息，上报错误时很有用**
 **2. 添加 fallback, FallbackComponent, fallbackRender 3个 props，提供多种方法来传入展示 fallback**
 
-## 第三鞭：添加重置回调
+## 第三步：添加重置回调
 
 有时候会遇到这种情况：服务器突然抽风了，503、502了，前端获取不到响应，这时候某个组件报错了，但是过一会又正常了。比较好的方法是允许用户点一下 fallback 里的一个按钮来重新加载出错组件，不需要重刷页面，这样的操作下面称为**“重置”**。
 
@@ -415,7 +377,7 @@ const App = () => {
 **1. 添加 onReset 来实现重置的逻辑**
 **2. 在 fallback 组件里找个按钮绑定 `props.resetErrorBoundary` 来触发重置逻辑**
 
-## 第四鞭：监听渲染以重置
+## 第四步：监听渲染以重置
 
 上面的重置逻辑简单也很实用，但是有时也会有局限性：触发重置的动作只能在 fallback 里面。假如我的重置按钮不在 fallback 里呢？或者 onReset 函数根本不在这个 App 组件下那怎么办呢？难道要将 onReset 像传家宝一路传到这个 App 再传入 ErrorBoundary 里？
 
@@ -581,9 +543,9 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren<ErrorBoundar
 
 这里自动重置还有一个好处：假如是由于网络波动引发的异常，那页面当然会显示 fallback 了，如果用上面直接调用 props.resetErrorBoundary 方法来重置，只要用户不点“重置”按钮，那块地方永远不会被重置。又由于是因为网络波动引发的异常，有可能就那0.001 秒有问题，别的时间又好了，所以如果我们将一些变化频繁的值放到 `resetKeys` 里就很容易自动触发重置。例如，报错后，其它地方的值变了从而更改了 `resetKeys` 的元素值就会触发自动重置。对于用户来说，最多只会看到一闪而过的 fallback，然后那块地方又正常了。这样一来，用户也不需要亲自触发重置了。
 
-## 第五鞭：输出轮子
+## 第五步：输出轮子
 
-上面四鞭里，到最后都是 `export default ErrorBoundary` 将组件输出，如果代理里很多个地方都要 catch error，就有这样很啰嗦的代码：
+上面四步里，到最后都是 `export default ErrorBoundary` 将组件输出，如果代理里很多个地方都要 catch error，就有这样很啰嗦的代码：
 
 ```html
 <div>
@@ -751,9 +713,9 @@ export default withErrorBoundary(Greeting)
 **1. 提供 `withErrorBoundary` 方法来包裹业务组件实现异常捕获**
 **2. 提供 `useErrorHandler` hook 让开发者自己处理/抛出错误**
 
-## “闪电五连鞭”总结
+## 总结
 
-再次总结一下“抓错五连鞭”的要点：
+再次总结一下上面的要点：
 
 1. 造一个 ErrorBoundary 轮子
 2. `componentDidCatch` 捕获页面报错，`getDerivedStateFromError` 更新 ErrorBoundary 的 state，并获取具体 error
