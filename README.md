@@ -184,7 +184,7 @@ export default ErrorBoundary
 ```tsx
 const App = () => {
   return (
-    <ErrorBoundary fallback={<div>出错啦</div>} onError={logger.error('出错啦')}>
+    <ErrorBoundary fallback={<div>出错啦</div>} onError={() => logger.error('出错啦')}>
       <UserList />
     </ErrorBoundary>
   )
