@@ -418,8 +418,7 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren<ErrorBoundar
 ```
 
 首先，在 `componentDidupdate` 里去做 resetKeys 的监听，只要组件有 render 就看看 `resetKeys` 里面的元素是否改过了，改过了就会重置。
-
-但这里又会有一个问题：万一 `resetKeys` 里元素是个 Date 或者一个对象怎么办？所以，我们还需要给开发者提供一种判断 `resetKeys` 元素是否改变的方法，这里就添加一个 `onResetKeysChange` 的 props 就好了：
+可以把 `onResetKeysChange` 提供给外面去做 resetKeys 监听（原版的 `react-error-boundary` 提供的 API 是为了一些 Edge Case 场景）。
 
 ```tsx
 // 本组件 ErrorBoundary 的 props
@@ -453,8 +452,6 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren<ErrorBoundar
   }
 }
 ```
-
-在 `changedArray` 判定后，再次使用 `props.onResetKeysChange` 再次自定义判断（如果有的话）`resetKeys` 里的元素值是否有更新。
 
 还有没有问题呢？嗯，还有问题。这里注意这里的 `componentDidUpdate` 钩子逻辑，假如某个 key 是触发 error 的元凶，那么就有可能触发二次 error 的情况：
 
@@ -721,7 +718,7 @@ export default withErrorBoundary(Greeting)
 2. `componentDidCatch` 捕获页面报错，`getDerivedStateFromError` 更新 ErrorBoundary 的 state，并获取具体 error
 3. 提供多种展示错误内容入口：`fallback`, `FallbackComponent`, `fallbackRender`
 4. 重置钩子：提供 `onReset`, `resetErrorBoundary` 的传值和调用，以实现重置
-5. 重置监听数组：监听 `resetKeys` 的变化来重置。对于拥有复杂元素的 `resetKeys` 数组提供 `onResetKeysChange` 让开发者自行判断。在 `componentDidUpdate` 里监听每次渲染时 `resetKeys` 变化，并设置 `updatedWithError` 作为 flag 判断是否由于 error 引发的渲染，对于普通渲染，只要 `resetKeys` 变化，直接重置
+5. 重置监听数组：监听 `resetKeys` 的变化来重置。
 6. 提供 ErrorBoundary 的2种使用方法：嵌套业务组件，将业务组件传入`withErrorBoundary` 高阶函数。提供 `useErrorBoundary` 钩子给开发者自己抛出 ErrorBoundary 不能自动捕获的错误
 
 ## 耗子尾汁，好好反思
